@@ -90,13 +90,7 @@ async function loadLocations() {
   const json = JSON.parse(text.substring(47, text.length - 2));
   const rows = json.table.rows.map(r => r.c.map(c => (c ? c.v : "")));
 
-  // Find header row: the first row where columns B..W contain mostly text
-  let headerRow = rows.find(r => {
-    const cells = r.slice(1); // skip column A
-    const textCount = cells.filter(cell => isNaN(cell)).length;
-    return textCount >= 3; // at least 3 text cells = header row
-  });
-
+  const headerRow = rows[0]; // ALWAYS use row 0 as header
   const pickupSelect = document.getElementById("pickup");
   const dropoffSelect = document.getElementById("dropoff");
 
@@ -130,13 +124,7 @@ async function calculateFare() {
     const json = JSON.parse(text.substring(47, text.length - 2));
     const rows = json.table.rows.map(r => r.c.map(c => (c ? c.v : "")));
 
-    // Find header row again
-    let headerRow = rows.find(r => {
-      const cells = r.slice(1);
-      const textCount = cells.filter(cell => isNaN(cell)).length;
-      return textCount >= 3;
-    });
-
+    const headerRow = rows[0]; // ALWAYS use row 0 as header
     const fromIndex = headerRow.indexOf(pickup);
     const toRow = rows.find(r => r[0] === dropoff);
 
