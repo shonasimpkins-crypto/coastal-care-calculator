@@ -94,15 +94,19 @@ async function loadLocations() {
   const pickupSelect = document.getElementById("pickup");
   const dropoffSelect = document.getElementById("dropoff");
 
-  headers.forEach((loc, index) => {
-    if (index === 0) return; // skip first blank column
-    const opt1 = document.createElement("option");
-    opt1.textContent = loc;
-    pickupSelect.appendChild(opt1);
+  // Load pickup locations from headers (skip blank first column)
+  headers.slice(1).forEach(loc => {
+    const opt = document.createElement("option");
+    opt.textContent = loc;
+    pickupSelect.appendChild(opt);
+  });
 
-    const opt2 = document.createElement("option");
-    opt2.textContent = loc;
-    dropoffSelect.appendChild(opt2);
+  // Load dropoff locations from first column of each row (skip header row)
+  rows.slice(1).forEach(r => {
+    const loc = r[0];
+    const opt = document.createElement("option");
+    opt.textContent = loc;
+    dropoffSelect.appendChild(opt);
   });
 }
 
