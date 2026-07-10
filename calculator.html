@@ -90,10 +90,11 @@ async function loadLocations() {
   const json = JSON.parse(text.substring(47, text.length - 2));
   const rows = json.table.rows.map(r => r.c.map(c => (c ? c.v : "")));
 
-  // Find the header row (the one where columns B..W are text, not numbers)
+  // Find header row: the first row where columns B..W contain mostly text
   let headerRow = rows.find(r => {
-    // Check columns B..W for text values
-    return r.slice(1).every(cell => typeof cell === "string" && cell.trim() !== "");
+    const cells = r.slice(1); // skip column A
+    const textCount = cells.filter(cell => isNaN(cell)).length;
+    return textCount >= 3; // at least 3 text cells = header row
   });
 
   const pickupSelect = document.getElementById("pickup");
@@ -101,15 +102,17 @@ async function loadLocations() {
 
   // Load pickup locations from header row (skip column A)
   headerRow.slice(1).forEach(loc => {
-    const opt = document.createElement("option");
-    opt.textContent = loc;
-    pickupSelect.appendChild(opt);
+    if (loc && typeof loc === "string") {
+      const opt = document.createElement("option");
+      opt.textContent = loc;
+      pickupSelect.appendChild(opt);
+    }
   });
 
   // Load dropoff locations from column A (skip header row)
   rows.slice(1).forEach(r => {
     const loc = r[0];
-    if (typeof loc === "string" && loc.trim() !== "") {
+    if (loc && typeof loc === "string") {
       const opt = document.createElement("option");
       opt.textContent = loc;
       dropoffSelect.appendChild(opt);
@@ -129,7 +132,9 @@ async function calculateFare() {
 
     // Find header row again
     let headerRow = rows.find(r => {
-      return r.slice(1).every(cell => typeof cell === "string" && cell.trim() !== "");
+      const cells = r.slice(1);
+      const textCount = cells.filter(cell => isNaN(cell)).length;
+      return textCount >= 3;
     });
 
     const fromIndex = headerRow.indexOf(pickup);
@@ -156,6 +161,5 @@ document.getElementById("calcBtn").addEventListener("click", calculateFare);
 
 loadLocations();
 </script>
-
 </body>
 </html>
