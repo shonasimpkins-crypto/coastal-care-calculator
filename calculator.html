@@ -83,14 +83,21 @@ const SHEET_URL =
 
 const RATE_PER_KM = 2.5;
 
-// Load dropdowns from sheet automatically
+// Safe JSON extractor for Google Sheets
+function extractJson(text) {
+  const start = text.indexOf("{");
+  const end = text.lastIndexOf("}");
+  return JSON.parse(text.substring(start, end + 1));
+}
+
 async function loadLocations() {
   const res = await fetch(SHEET_URL);
   const text = await res.text();
-  const json = JSON.parse(text.substring(47, text.length - 2));
+  const json = extractJson(text);
+
   const rows = json.table.rows.map(r => r.c.map(c => (c ? c.v : "")));
 
-  const headerRow = rows[0]; // ALWAYS use row 0 as header
+  const headerRow = rows[0]; // row 0 is ALWAYS header
   const pickupSelect = document.getElementById("pickup");
   const dropoffSelect = document.getElementById("dropoff");
 
@@ -121,10 +128,11 @@ async function calculateFare() {
   try {
     const res = await fetch(SHEET_URL);
     const text = await res.text();
-    const json = JSON.parse(text.substring(47, text.length - 2));
-    const rows = json.table.rows.map(r => r.c.map(c => (c ? c.v : "")));
+    const json = extractJson(text);
 
-    const headerRow = rows[0]; // ALWAYS use row 0 as header
+    const rows = json.table.rows.map(r => r.c.map(c => (c ? c.v : "")));
+    const headerRow = rows[0];
+
     const fromIndex = headerRow.indexOf(pickup);
     const toRow = rows.find(r => r[0] === dropoff);
 
