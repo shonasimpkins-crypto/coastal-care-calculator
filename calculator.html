@@ -83,7 +83,7 @@ const SHEET_URL =
 
 const RATE_PER_KM = 2.5;
 
-// Safe JSON extractor for Google Sheets
+// Safe JSON extractor
 function extractJson(text) {
   const start = text.indexOf("{");
   const end = text.lastIndexOf("}");
@@ -96,24 +96,24 @@ async function loadLocations() {
   const json = extractJson(text);
 
   const rows = json.table.rows.map(r => r.c.map(c => (c ? c.v : "")));
+  const cols = json.table.cols.map(c => c.label || "");
 
-  const headerRow = rows[0]; // row 0 is ALWAYS header
   const pickupSelect = document.getElementById("pickup");
   const dropoffSelect = document.getElementById("dropoff");
 
-  // Load pickup locations from header row (skip column A)
-  headerRow.slice(1).forEach(loc => {
-    if (loc && typeof loc === "string") {
+  // PICKUP: use column headers (skip first blank column)
+  cols.slice(1).forEach(loc => {
+    if (loc.trim() !== "") {
       const opt = document.createElement("option");
       opt.textContent = loc;
       pickupSelect.appendChild(opt);
     }
   });
 
-  // Load dropoff locations from column A (skip header row)
-  rows.slice(1).forEach(r => {
+  // DROPOFF: use first column of each row
+  rows.forEach(r => {
     const loc = r[0];
-    if (loc && typeof loc === "string") {
+    if (loc && typeof loc === "string" && loc.trim() !== "") {
       const opt = document.createElement("option");
       opt.textContent = loc;
       dropoffSelect.appendChild(opt);
@@ -131,9 +131,9 @@ async function calculateFare() {
     const json = extractJson(text);
 
     const rows = json.table.rows.map(r => r.c.map(c => (c ? c.v : "")));
-    const headerRow = rows[0];
+    const cols = json.table.cols.map(c => c.label || "");
 
-    const fromIndex = headerRow.indexOf(pickup);
+    const fromIndex = cols.indexOf(pickup);
     const toRow = rows.find(r => r[0] === dropoff);
 
     if (fromIndex === -1 || !toRow) {
