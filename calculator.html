@@ -81,7 +81,7 @@ button:hover {
 const SHEET_URL =
   "https://docs.google.com/spreadsheets/d/154dAUAW55ZdVyXRES70qDNGuPXNaYkxliLGbc8pg2uU/gviz/tq?tqx=out:json&tq&gid=1059243316";
 
-const RATE_PER_KM = 2.5;
+const RATE_PER_KM = 1.7;
 
 // Load dropdowns from sheet automatically
 async function loadLocations() {
@@ -94,19 +94,24 @@ async function loadLocations() {
   const pickupSelect = document.getElementById("pickup");
   const dropoffSelect = document.getElementById("dropoff");
 
-  // Load pickup locations from headers (skip blank first column)
-  headers.slice(1).forEach(loc => {
-    const opt = document.createElement("option");
-    opt.textContent = loc;
-    pickupSelect.appendChild(opt);
+  // Load pickup locations from headers (skip first column ALWAYS)
+  headers.forEach((loc, index) => {
+    if (index === 0) return; // skip column A
+    if (typeof loc === "string" && loc.trim() !== "") {
+      const opt = document.createElement("option");
+      opt.textContent = loc;
+      pickupSelect.appendChild(opt);
+    }
   });
 
   // Load dropoff locations from first column of each row (skip header row)
   rows.slice(1).forEach(r => {
     const loc = r[0];
-    const opt = document.createElement("option");
-    opt.textContent = loc;
-    dropoffSelect.appendChild(opt);
+    if (typeof loc === "string" && loc.trim() !== "") {
+      const opt = document.createElement("option");
+      opt.textContent = loc;
+      dropoffSelect.appendChild(opt);
+    }
   });
 }
 
