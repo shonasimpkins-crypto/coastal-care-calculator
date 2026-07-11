@@ -146,10 +146,19 @@ async function calculateFare() {
     }
 
     const distance = parseFloat(toRow[fromIndex]);
-    let fare = distance * RATE_PER_KM * 2;
+    // Round to nearest $0.50 helper
+function roundToNearest50Cents(amount) {
+  return Math.round(amount * 2) / 2;
+}
+
+let fare = distance * RATE_PER_KM * 2;   // your return-trip multiplier
+
+// Apply rounding BEFORE minimum fare check
+fare = roundToNearest50Cents(fare);
+
 let message = `Estimated fare: $${fare.toFixed(2)}`;
 
-// Apply minimum fare rule
+// Apply minimum fare rule AFTER rounding
 if (fare < 12.5) {
   fare = 12.5;
   message = `Estimated fare: $${fare.toFixed(2)}`;
@@ -161,6 +170,7 @@ if (fare < 12.5) {
 }
 
 document.getElementById("result").innerHTML = message;
+
 
 
   } catch (err) {
