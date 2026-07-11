@@ -81,7 +81,7 @@ button:hover {
 const SHEET_URL =
   "https://docs.google.com/spreadsheets/d/154dAUAW55ZdVyXRES70qDNGuPXNaYkxliLGbc8pg2uU/gviz/tq?tqx=out:json&tq&gid=1059243316";
 
-const RATE_PER_KM = 2.5;
+const RATE_PER_KM = 1.7;
 
 // Safe JSON extractor
 function extractJson(text) {
@@ -146,7 +146,7 @@ async function calculateFare() {
     }
 
     const distance = parseFloat(toRow[fromIndex]);
-    const fare = (distance * RATE_PER_KM).toFixed(2);
+    const fare = (distance * RATE_PER_KM * 2).toFixed(2);
 
     document.getElementById("result").textContent =
       `Estimated fare: $${fare}`;
