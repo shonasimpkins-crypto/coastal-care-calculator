@@ -146,7 +146,7 @@ async function calculateFare() {
     }
 
     const distance = parseFloat(toRow[fromIndex]);
-    let fare = distance * RATE_PER_KM;
+    let fare = distance * RATE_PER_KM * 2;
 let message = `Estimated fare: $${fare.toFixed(2)}`;
 
 // Apply minimum fare rule
