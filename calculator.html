@@ -154,8 +154,8 @@ if (fare < 12.5) {
   fare = 12.5;
   message = `Estimated fare: $${fare.toFixed(2)}`;
 
-  // Add red minimum fare notice
-  message += `<br><span style="color:red; font-weight:bold;">
+  // Add red minimum fare notice (smaller + not bold)
+  message += `<br><span style="color:red; font-size:0.85em;">
                 A $12.50 minimum fare will apply to this journey
               </span>`;
 }
