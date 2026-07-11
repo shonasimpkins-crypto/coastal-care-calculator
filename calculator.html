@@ -161,7 +161,7 @@ let message = `Estimated fare: $${fare.toFixed(2)}`;
 // Apply minimum fare rule AFTER rounding
 if (fare < 12.5) {
   fare = 12.5;
-  message = `Estimated fare: $${fare.toFixed(2)}`;
+  message = `Estimated return trip fare: $${fare.toFixed(2)}`;
 
   // Add red minimum fare notice (smaller + not bold)
   message += `<br><span style="color:red; font-size:0.85em;">
