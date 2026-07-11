@@ -102,19 +102,22 @@ async function loadLocations() {
   const dropoffSelect = document.getElementById("dropoff");
 
   // PICKUP: use column headers (skip first blank column)
-  cols.slice(1).forEach(loc => {
-    if (loc.trim() !== "") {
+  for (let i = 1; i < cols.length; i++) {
+    const loc = cols[i];
+    if (loc && loc.trim() !== "") {
       const opt = document.createElement("option");
+      opt.value = loc;
       opt.textContent = loc;
       pickupSelect.appendChild(opt);
     }
-  });
+  }
 
   // DROPOFF: use first column of each row
   rows.forEach(r => {
     const loc = r[0];
     if (loc && typeof loc === "string" && loc.trim() !== "") {
       const opt = document.createElement("option");
+      opt.value = loc;
       opt.textContent = loc;
       dropoffSelect.appendChild(opt);
     }
