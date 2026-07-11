@@ -156,7 +156,7 @@ let fare = distance * RATE_PER_KM * 2;   // your return-trip multiplier
 // Apply rounding BEFORE minimum fare check
 fare = roundToNearest50Cents(fare);
 
-let message = `Estimated fare: $${fare.toFixed(2)}`;
+let message = `Estimated return trip fare: $${fare.toFixed(2)}`;
 
 // Apply minimum fare rule AFTER rounding
 if (fare < 12.5) {
