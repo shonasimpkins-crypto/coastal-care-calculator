@@ -146,11 +146,10 @@ async function calculateFare() {
     }
 
     const distance = parseFloat(toRow[fromIndex]);
-    const fare = (distance).toFixed(2);
+    const fare = (distance * RATE_PER_KM).toFixed(2);
+document.getElementById("result").textContent =
+  `Estimated fare: $${fare}`;
 
-    // TEMP: show distance only for debugging
-    document.getElementById("result").textContent =
-      `Distance: ${distance} km (pickup: ${pickup}, drop-off: ${dropoff})`;
   } catch (err) {
     console.error(err);
     document.getElementById("result").textContent = "Error loading data.";
