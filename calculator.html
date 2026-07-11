@@ -148,8 +148,9 @@ async function calculateFare() {
     const distance = parseFloat(toRow[fromIndex]);
     const fare = (distance).toFixed(2);
 
+    // TEMP: show distance only for debugging
     document.getElementById("result").textContent =
-      `Estimated fare: $${fare}`;
+      `Distance: ${distance} km (pickup: ${pickup}, drop-off: ${dropoff})`;
   } catch (err) {
     console.error(err);
     document.getElementById("result").textContent = "Error loading data.";
