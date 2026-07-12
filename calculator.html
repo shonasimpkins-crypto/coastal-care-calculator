@@ -191,12 +191,19 @@ loadLocations();
     parent.postMessage({ iframeHeight: height }, "*");
   }
 
+  // Send height on load and resize
   window.onload = sendHeight;
   window.onresize = sendHeight;
 
-  // Also trigger height updates when dropdowns change
-  document.addEventListener("change", sendHeight);
+  // Watch for ANY DOM changes (new text, new elements, etc.)
+  const observer = new MutationObserver(sendHeight);
+  observer.observe(document.body, { 
+    childList: true, 
+    subtree: true, 
+    characterData: true 
+  });
 </script>
+
 
 </body>
 </html>
