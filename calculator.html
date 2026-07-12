@@ -164,7 +164,7 @@ async function calculateFare() {
 
     // Round to nearest $0.50 helper
     function roundToNearest50Cents(amount) {
-      return Math.round(amount * 2) / 2;
+      return Math.ceil(amount * 2) / 2;
     }
 
     // Journey multiplier
