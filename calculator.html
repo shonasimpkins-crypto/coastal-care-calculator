@@ -4,7 +4,7 @@
 <link rel="manifest" href="manifest.json">
 <meta name="theme-color" content="#0077cc">
 <meta charset="UTF-8">
-<title>Coastal Care Journey Price Calculator</title>
+<title>Coastal Care Transport - Journey Price Calculator</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
 <style>
@@ -24,9 +24,14 @@ body {
   box-shadow: 0 4px 8px rgba(0,0,0,0.1);
 }
 
-#fareCalculator h2 {
+#fareCalculator h1, #fareCalculator h2 {
   text-align: center;
   color: #0077cc;
+  margin: 0;
+}
+
+#fareCalculator h2 {
+  margin-bottom: 15px;
 }
 
 label {
@@ -67,13 +72,20 @@ button:hover {
 <body>
 
 <div id="fareCalculator">
-  <h2>Coastal Care Journey Price Calculator</h2>
+  <h1>Coastal Care Transport</h1>
+  <h2>Journey Price Calculator</h2>
 
   <label for="pickup">Pickup location:</label>
   <select id="pickup"></select>
 
   <label for="dropoff">Drop-off location:</label>
   <select id="dropoff"></select>
+
+  <label for="journeyType">Journey type:</label>
+  <select id="journeyType">
+    <option value="single">Single Journey</option>
+    <option value="return">Return Journey</option>
+  </select>
 
   <button id="calcBtn">Calculate Fare</button>
   <div id="result"></div>
@@ -129,6 +141,7 @@ async function loadLocations() {
 async function calculateFare() {
   const pickup = document.getElementById("pickup").value.trim();
   const dropoff = document.getElementById("dropoff").value.trim();
+  const journeyType = document.getElementById("journeyType").value;
 
   try {
     const res = await fetch(SHEET_URL);
@@ -148,32 +161,32 @@ async function calculateFare() {
     }
 
     const distance = parseFloat(toRow[fromIndex]);
+
     // Round to nearest $0.50 helper
-function roundToNearest50Cents(amount) {
-  return Math.round(amount * 2) / 2;
-}
+    function roundToNearest50Cents(amount) {
+      return Math.round(amount * 2) / 2;
+    }
 
-let fare = distance * RATE_PER_KM * 2;   // your return-trip multiplier
+    // Journey multiplier
+    const multiplier = journeyType === "return" ? 2 : 1;
 
-// Apply rounding BEFORE minimum fare check
-fare = roundToNearest50Cents(fare);
+    let fare = distance * RATE_PER_KM * multiplier;
 
-let message = `Estimated return trip fare: $${fare.toFixed(2)}`;
+    // Apply rounding BEFORE minimum fare check
+    fare = roundToNearest50Cents(fare);
 
-// Apply minimum fare rule AFTER rounding
-if (fare < 12.5) {
-  fare = 12.5;
-  message = `Estimated return trip fare: $${fare.toFixed(2)}`;
+    let message = `Estimated ${journeyType} trip fare: $${fare.toFixed(2)}`;
 
-  // Add red minimum fare notice (smaller + not bold)
-  message += `<br><span style="color:red; font-size:0.85em;">
-                A $12.50 minimum fare will apply to this journey
-              </span>`;
-}
+    // Apply minimum fare rule AFTER rounding
+    if (fare < 12.5) {
+      fare = 12.5;
+      message = `Estimated ${journeyType} trip fare: $${fare.toFixed(2)}`;
+      message += `<br><span style="color:red; font-size:0.85em;">
+                    A $12.50 minimum fare will apply to this journey
+                  </span>`;
+    }
 
-document.getElementById("result").innerHTML = message;
-
-
+    document.getElementById("result").innerHTML = message;
 
   } catch (err) {
     console.error(err);
@@ -185,17 +198,16 @@ document.getElementById("calcBtn").addEventListener("click", calculateFare);
 
 loadLocations();
 </script>
+
 <script>
   function sendHeight() {
     const height = document.documentElement.scrollHeight;
     parent.postMessage({ iframeHeight: height }, "*");
   }
 
-  // Send height on load and resize
   window.onload = sendHeight;
   window.onresize = sendHeight;
 
-  // Watch for ANY DOM changes (new text, new elements, etc.)
   const observer = new MutationObserver(sendHeight);
   observer.observe(document.body, { 
     childList: true, 
@@ -203,7 +215,6 @@ loadLocations();
     characterData: true 
   });
 </script>
-
 
 </body>
 </html>
