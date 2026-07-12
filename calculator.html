@@ -185,5 +185,18 @@ document.getElementById("calcBtn").addEventListener("click", calculateFare);
 
 loadLocations();
 </script>
+<script>
+  function sendHeight() {
+    const height = document.documentElement.scrollHeight;
+    parent.postMessage({ iframeHeight: height }, "*");
+  }
+
+  window.onload = sendHeight;
+  window.onresize = sendHeight;
+
+  // Also trigger height updates when dropdowns change
+  document.addEventListener("change", sendHeight);
+</script>
+
 </body>
 </html>
