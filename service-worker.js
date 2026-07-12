@@ -1,6 +1,6 @@
 self.addEventListener("install", event => {
   event.waitUntil(
-    caches.open("carecalc-v1").then(cache => {
+    caches.open("carecalc-v2").then(cache => {
       return cache.addAll([
         "./calculator.html",
         "./manifest.json",
